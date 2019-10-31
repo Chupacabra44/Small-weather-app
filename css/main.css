@@ -3,3 +3,23 @@
     height: 200px;
     border: 1px solid #e7e7e7;
 }
+
+.fa-temperature-low {
+    color: cornflowerblue;
+}
+
+.fa-temperature-high {
+    color: rgb(255, 7, 7);
+}
+
+.fa-tint {
+    color: rgb(219, 219, 219);
+}
+
+.fa-cloud-sun {
+    color: rgb(130, 130, 255);
+}
+
+.fa-wind {
+    color: midnightblue;
+}
