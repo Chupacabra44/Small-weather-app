@@ -1,18 +1,20 @@
+var data = {};
 function kelvinToCel(kelvin) {
     return Math.round(kelvin - 273.13);
 }
 
 function degrees(deg) {
     if (deg > 0 && deg < 90) {
-        console.log("NE");
+        return "NE"
     } else if (deg > 90 && deg < 180) {
-        console.log("SE");
+        return "SE";
     } else if (deg > 180 && deg < 270) {
-        console.log("SW");
+        return "SW"
     } else {
-        console.log("NW");
+        return "NW"
     }
 }
+
 
 /* 
 $.ajax({
@@ -28,6 +30,28 @@ $.ajax({
 
     }
 }); */
+
+function loadData (data) {
+
+    localStorage.setItem("history", JSON.stringify(data));
+/*     console.log(kelvinToCel(result.main.temp));
+    console.log(kelvinToCel(result.main.temp_min));
+    console.log(kelvinToCel(result.main.temp_max)); */
+
+    $("#city").val(data.city);
+    $("#temp").html(data.temp);
+    $("#temp-min").html(data.min);
+    $("#temp-max").html(data.max);
+    $("#humidity").html(data.hum);
+    $("#weather").html(data.weather);
+    $("#wind").html(data.wind);
+
+    $("body").css({
+        "background": "url(img/" + data.weather + ".jpg) no-repeat center center fixed",
+        "background-size": "cover"
+
+    });
+}
 
 
 function getData() {
@@ -45,18 +69,16 @@ function getData() {
         $.ajax({
             url: "http://api.openweathermap.org/data/2.5/weather?q=" + input.val() + "&appid=493539488ed186ea91ec1ff76569acea",
             success: function (result) {
-                console.log(kelvinToCel(result.main.temp));
-                console.log(kelvinToCel(result.main.temp_min));
-                console.log(kelvinToCel(result.main.temp_max));
+               
+                data.city = input.val();
+                data.temp = kelvinToCel(result.main.temp);
+                data.min = kelvinToCel(result.main.temp_min);
+                data.max = kelvinToCel(result.main.temp_max);
+                data.hum = result.main.humidity;
+                data.weather = result.weather[0].main;
+                data.wind = degrees(result.wind.deg);
 
-
-                $("#temp").html(kelvinToCel(result.main.temp));
-                console.log(result);
-                $("#temp-min").html(kelvinToCel(result.main.temp_min));
-                $("#temp-max").html(kelvinToCel(result.main.temp_max));
-                $("#humidity").html(result.main.humidity);
-                $("#weather").html(weather.main);
-                $("#wind").html(degrees(result.wind.deg));
+                loadData(data);
 
 
 
@@ -69,3 +91,40 @@ function getData() {
         });
     }
 }
+
+function getInfoByCity (city) {
+    $.ajax({
+        url: "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=493539488ed186ea91ec1ff76569acea",
+        success: function (result) {
+           
+            data.city = city;
+            data.temp = kelvinToCel(result.main.temp);
+            data.min = kelvinToCel(result.main.temp_min);
+            data.max = kelvinToCel(result.main.temp_max);
+            data.hum = result.main.humidity;
+            data.weather = result.weather[0].main;
+            data.wind = degrees(result.wind.deg);
+
+            loadData(data);
+
+
+
+
+        },
+        error: function (result) {
+            console.log(result);
+
+        }
+    });
+}
+
+
+$(document).ready(function(){
+
+    if (localStorage.getItem("history") != null) {
+        loadData(JSON.parse(localStorage.getItem("history")));
+    }
+
+});
+
+
